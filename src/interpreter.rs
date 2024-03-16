@@ -39,27 +39,34 @@ pub enum Value {
     Str(Str),
 }
 
-pub struct Environment{
+pub struct Environment {
     pub variables: HashMap<VariableName, Value>,
     pub functions: HashMap<String, Box<dyn BuildInFunction>>,
 }
 
-impl Environment{
-    pub fn new() -> Environment{
-        Environment{
+impl Environment {
+    pub fn new() -> Environment {
+        Environment {
             variables: HashMap::new(),
             functions: HashMap::new(),
         }
     }
 }
 
-pub trait BuildInFunction{
+pub trait BuildInFunction {
     fn execute(&self, args: &Vec<Value>) -> Result<Value, String>;
     fn name(&self) -> &str;
 }
 
-fn call_built_in_function(env: &Environment, name: &str, args: &Vec<Value>) -> Result<Value, String> {
-    let function = env.functions.get(name).ok_or(format!("Function not found: {}", name))?;
+fn call_built_in_function(
+    env: &Environment,
+    name: &str,
+    args: &Vec<Value>,
+) -> Result<Value, String> {
+    let function = env
+        .functions
+        .get(name)
+        .ok_or(format!("Function not found: {}", name))?;
     function.execute(args)
 }
 
